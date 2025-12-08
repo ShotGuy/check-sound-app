@@ -1,0 +1,23 @@
+﻿
+> check-sound-app@0.1.0 lint
+> eslint
+
+
+D:\Mini Project\check-sound-app\src\app\login\page.tsx
+    9:10  warning  'Label' is defined but never used                                @typescript-eslint/no-unused-vars
+  107:28  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+D:\Mini Project\check-sound-app\src\app\product\[id]\page.tsx
+   2:42  warning  'Check' is defined but never used           @typescript-eslint/no-unused-vars
+   5:10  warning  'Card' is defined but never used            @typescript-eslint/no-unused-vars
+   5:16  warning  'CardContent' is defined but never used     @typescript-eslint/no-unused-vars
+   6:10  warning  'Avatar' is defined but never used          @typescript-eslint/no-unused-vars
+   6:18  warning  'AvatarFallback' is defined but never used  @typescript-eslint/no-unused-vars
+   6:34  warning  'AvatarImage' is defined but never used     @typescript-eslint/no-unused-vars
+  47:13  warning  'id' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+D:\Mini Project\check-sound-app\utils\supabase\middleware.ts
+  18:58  warning  'options' is defined but never used  @typescript-eslint/no-unused-vars
+
+Γ£û 10 problems (1 error, 9 warnings)
+
