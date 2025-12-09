@@ -1,50 +1,32 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import ProductCard from '@/components/ProductCard'
+import { createClient } from '@/utils/supabase/server'
 
-// Dummy Data
-const PRODUCTS = [
-  {
-    id: '1',
-    name: 'JBL SRX835P Three-Way Bass Reflex',
-    price: 1500000,
-    image: 'https://images.unsplash.com/photo-1545167622-3a6ac156bb0f?q=80&w=2070&auto=format&fit=crop',
-    rating: 4.8,
-    category: 'Sound System'
-  },
-  {
-    id: '2',
-    name: 'Yamaha CL5 Digital Mixing Console',
-    price: 3500000,
-    image: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=2070&auto=format&fit=crop',
-    rating: 5.0,
-    category: 'Mixers'
-  },
-  {
-    id: '3',
-    name: 'Moving Head Beam 230W',
-    price: 750000,
-    image: 'https://images.unsplash.com/photo-1563089145-599997674d42?q=80&w=2070&auto=format&fit=crop',
-    rating: 4.5,
-    category: 'Lighting'
-  },
-  {
-    id: '4',
-    name: 'Shure SM58 Microphone Kit (4 pcs)',
-    price: 500000,
-    image: 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?q=80&w=2070&auto=format&fit=crop',
-    rating: 4.9,
-    category: 'Sound System'
-  },
-]
+export default async function Home() {
+  const supabase = await createClient()
 
-export default function Home() {
+  const { data: products, error } = await supabase
+    .from('products')
+    .select(`
+      *,
+      categories (
+        name
+      ),
+      stores (
+        name,
+        image_url
+      )
+    `)
+
+  console.log('Products:', products)
+  console.log('Error:', error)
+
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
       <section className="relative h-[500px] flex items-center justify-center bg-black text-white overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-50">
-          {/* Placeholder for Hero Image */}
           <div className="w-full h-full bg-[url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center" />
         </div>
         <div className="relative z-10 text-center px-4">
@@ -68,9 +50,22 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {PRODUCTS.map((product) => (
-            <ProductCard key={product.id} {...product} />
+          {products?.map((product: any) => (
+            <ProductCard
+              key={product.id}
+              id={product.id}
+              name={product.name}
+              price={product.price}
+              image={product.images?.[0] || 'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=1000'}
+              rating={5.0} // Placeholder until we have reviews
+              category={product.categories?.name || 'Equipment'}
+            />
           ))}
+          {(!products || products.length === 0) && (
+            <div className="col-span-full text-center text-gray-500 py-12">
+              No equipment found. Please run the seed script or add products manually.
+            </div>
+          )}
         </div>
       </section>
     </main>

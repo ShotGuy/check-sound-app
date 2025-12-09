@@ -1,12 +1,20 @@
+
 import Link from 'next/link'
-import { Search, User, Menu } from 'lucide-react'
+import { Search, User, Menu, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { createClient } from '@/utils/supabase/server'
+import SignOutButton from '@/components/SignOutButton'
 
 export default async function Navbar() {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
+
+    let profile = null
+    if (user) {
+        const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single()
+        profile = data
+    }
 
     return (
         <nav className="bg-black text-white py-4 px-6 sticky top-0 z-50">
@@ -35,11 +43,25 @@ export default async function Navbar() {
                     </div>
 
                     {user ? (
-                        <div className="flex items-center space-x-2">
-                            <span className="text-sm text-gray-300 hidden sm:inline">{user.email}</span>
-                            <Button variant="ghost" size="icon" className="rounded-full">
-                                <User className="h-5 w-5" />
-                            </Button>
+                        <div className="flex items-center space-x-4">
+                            <div className="flex flex-col items-end hidden sm:flex">
+                                <span className="text-sm font-medium text-white">{profile?.full_name || user.email}</span>
+                                <span className="text-[10px] uppercase tracking-wider text-emerald-400 font-bold bg-emerald-400/10 px-1.5 py-0.5 rounded">
+                                    {profile?.role || 'USER'}
+                                </span>
+                            </div>
+
+                            <div className="flex items-center space-x-1">
+                                <Link href="/dashboard">
+                                    <Button variant="ghost" size="icon" className="rounded-full text-gray-300 hover:text-white hover:bg-white/10" title="Dashboard">
+                                        <User className="h-5 w-5" />
+                                    </Button>
+                                </Link>
+
+                                <SignOutButton variant="ghost" size="icon" className="rounded-full text-red-400 hover:text-red-300 hover:bg-red-900/20" title="Sign Out">
+                                    <LogOut className="h-5 w-5" />
+                                </SignOutButton>
+                            </div>
                         </div>
                     ) : (
                         <Link href="/login">
